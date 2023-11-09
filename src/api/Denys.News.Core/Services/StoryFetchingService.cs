@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Denys.News.Core.Clients;
+using Denys.News.Core.Configuration;
 using Denys.News.Core.Dtos;
 using Denys.News.Core.Repositories;
+using Microsoft.Extensions.Options;
 
 namespace Denys.News.Core.Services;
 
@@ -12,11 +15,14 @@ public sealed class StoryFetchingService : IStoryFetchingService
 {
     private readonly IStoryWriteRepository _repository;
     private readonly IHackerNewsClient _hackerNewsClient;
+    private readonly int _parallelRequests;
 
-    public StoryFetchingService(IStoryWriteRepository repository, IHackerNewsClient hackerNewsClient)
+    public StoryFetchingService(IOptions<StoryFetchingOptions> options, IStoryWriteRepository repository, IHackerNewsClient hackerNewsClient)
     {
         _repository = repository;
         _hackerNewsClient = hackerNewsClient;
+
+        _parallelRequests = options.Value.ParallelRequests ?? throw new ArgumentOutOfRangeException();
     }
 
     public async ValueTask FetchAsync()
@@ -25,16 +31,18 @@ public sealed class StoryFetchingService : IStoryFetchingService
 
         var stories = new List<StoryHeaderDto>();
 
-        foreach (var id in ids)
+        foreach (var idChunk in ids.Chunk(_parallelRequests))
         {
-            var hackerNewStoryDto = await _hackerNewsClient.GetStory(id);
+            var tasks = idChunk.Select(_hackerNewsClient.GetStory);
 
-            var storyHeaderDto = Map(hackerNewStoryDto);
+            var hackerNewStoryDtos = await Task.WhenAll(tasks);
 
-            stories.Add(storyHeaderDto);
+            var storyHeaderDtos = hackerNewStoryDtos.Select(Map);
+
+            stories.AddRange(storyHeaderDtos);
         }
 
-        _repository.SetBestStories(stories);
+        _repository.SetBestStories(stories.OrderByDescending(x => x.Score).ToArray());
     }
 
     private static StoryHeaderDto Map(HackerNewsStoryDto hackerNewStoryDto)

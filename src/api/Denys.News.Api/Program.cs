@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<HackerNewsApiOptions>(builder.Configuration.GetSection(HackerNewsApiOptions.Key));
+builder.Services.Configure<StoryFetchingOptions>(builder.Configuration.GetSection(StoryFetchingOptions.Key));
 builder.Services.Configure<StoryRefreshingOptions>(builder.Configuration.GetSection(StoryRefreshingOptions.Key));
 
 builder.Services.AddSingleton<InMemoryStoryRepository>();
