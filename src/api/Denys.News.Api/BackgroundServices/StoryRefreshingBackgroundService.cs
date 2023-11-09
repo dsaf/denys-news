@@ -1,24 +1,29 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Denys.News.Core.Configuration;
 using Denys.News.Core.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Denys.News.Api.BackgroundServices;
 
-public sealed class StoryFetchingBackgroundService : BackgroundService
+public sealed class StoryRefreshingBackgroundService : BackgroundService
 {
-    private readonly ILogger<StoryFetchingBackgroundService> _logger;
+    private readonly ILogger<StoryRefreshingBackgroundService> _logger;
     private readonly IStoryFetchingService _storyFetchingService;
     private readonly TimeSpan _interval;
 
-    public StoryFetchingBackgroundService(ILogger<StoryFetchingBackgroundService> logger, IStoryFetchingService storyFetchingService)
+    public StoryRefreshingBackgroundService(
+        ILogger<StoryRefreshingBackgroundService> logger,
+        IOptions<StoryRefreshingOptions> options,
+        IStoryFetchingService storyFetchingService)
     {
         _logger = logger;
         _storyFetchingService = storyFetchingService;
 
-        _interval = TimeSpan.FromSeconds(60);
+        _interval = TimeSpan.FromMilliseconds(options.Value.IntervalMs ?? throw new ArgumentOutOfRangeException());
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
