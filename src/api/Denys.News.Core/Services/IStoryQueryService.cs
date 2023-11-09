@@ -3,7 +3,7 @@ using Denys.News.Core.Dtos;
 
 namespace Denys.News.Core.Services;
 
-public interface IStoryService
+public interface IStoryQueryService
 {
     IReadOnlyCollection<StoryHeaderDto> GetBest(int number);
 }

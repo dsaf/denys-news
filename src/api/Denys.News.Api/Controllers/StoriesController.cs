@@ -10,12 +10,12 @@ namespace Denys.News.Api.Controllers;
 public sealed class StoriesController : ControllerBase
 {
     private readonly ILogger<StoriesController> _logger;
-    private readonly IStoryService _storyService;
+    private readonly IStoryQueryService _storyQueryService;
 
-    public StoriesController(ILogger<StoriesController> logger, IStoryService storyService)
+    public StoriesController(ILogger<StoriesController> logger, IStoryQueryService storyQueryService)
     {
         _logger = logger;
-        _storyService = storyService;
+        _storyQueryService = storyQueryService;
     }
 
     [HttpGet]
@@ -23,6 +23,6 @@ public sealed class StoriesController : ControllerBase
     {
         _logger.LogTrace($"{nameof(Get)} {nameof(number)}={{number}}", number);
 
-        return _storyService.GetBest(number);
+        return _storyQueryService.GetBest(number);
     }
 }
