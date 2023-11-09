@@ -1,21 +1,28 @@
+using System.Collections.Generic;
+using Denys.News.Core.Dtos;
+using Denys.News.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
-namespace Denys.News.Api.Controllers
+namespace Denys.News.Api.Controllers;
+
+[ApiController, Route("[controller]")]
+public sealed class StoriesController : ControllerBase
 {
-    [ApiController, Route("[controller]")]
-    public sealed class StoriesController : ControllerBase
+    private readonly ILogger<StoriesController> _logger;
+    private readonly IStoryService _storyService;
+
+    public StoriesController(ILogger<StoriesController> logger, IStoryService storyService)
     {
-        private readonly ILogger<StoriesController> _logger;
+        _logger = logger;
+        _storyService = storyService;
+    }
 
-        public StoriesController(ILogger<StoriesController> logger)
-        {
-            _logger = logger;
-        }
+    [HttpGet]
+    public IEnumerable<StoryHeaderDto> Get([FromQuery(Name = "n")] int number)
+    {
+        _logger.LogTrace($"{nameof(Get)} {nameof(number)}={{number}}", number);
 
-        [HttpGet]
-        public IEnumerable<string> Get([FromQuery(Name = "n")] int number)
-        {
-            return Enumerable.Range(1, number).Select(x => $"story {x}");
-        }
+        return _storyService.GetBest(number);
     }
 }
