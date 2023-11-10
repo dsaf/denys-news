@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Denys.News.Api.Controllers;
 
@@ -27,14 +28,18 @@ public sealed class StoriesController : ControllerBase
     /// <response code="500">In case of unexpected internal errors</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyCollection<StoryHeaderDto>))]
+    [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(void))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Get([FromQuery(Name = "n")] int number)
     {
         _logger.LogTrace($"{nameof(Get)} {nameof(number)}={{number}}", number);
 
-        return number > 0
-            ? Ok(_storyQueryService.GetBest(number))
-            : BadRequest("n is not a positive integer");
+        if (number <= 0)
+            return BadRequest("n is not a positive integer");
+
+        var result = _storyQueryService.GetBest(number);
+
+        return result.Any() ? Ok(result) : NoContent();
     }
 }
