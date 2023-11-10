@@ -38,7 +38,7 @@ Alternatively, you can invoke the endpoint directly using your preferred tool: h
 ## Assumptions Made
 
 * .NET 7 target is acceptible despite being an STS release.
-* When more than 500 stories are requested, there is no error produced but only 500 stories are returned
+* When more than 200 stories are requested, there is no error produced but only 200 stories are returned, due to source API limitations
 * It is acceptable to serve a snapshot of versions refreshed every 60 seconds (configurable)
 * Relative transactionality of data is important, so the list of best stories should be refreshed at approximately same time as story details
 * Implications of scaling out the web server are not considered
@@ -49,6 +49,7 @@ Ideally, further requirements should be received to form a backlog. Once the end
 
 The following tactical improvements could be made meanwhile:
 
+* Come up with an approach to extend the number of best stories beyond 200, though this might not be possible with 100% accuracy (e.g. compared to source ranking that takes into account downvotes)
 * Improve unit, integration and load test coverage
 * Introduce/evolve a domain layer
 * Implement more robust API versioning using https://github.com/dotnet/aspnet-api-versioning
