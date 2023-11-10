@@ -2,19 +2,25 @@
 
 ## How to Run
 
-### Prerequisites
+*Note: on start up and every 60 seconds (configurable) after, the API web application will be polling Hacker News API for new data.
+During these periods, the application will be making a number of requests to Hacker News API as quickly as possible in controlled batches making up to 8 (configurable) parrallel requests at a time.*
 
-* git https://git-scm.com/downloads
-* .NET 7 https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+### Development prerequisites
+
+| Tool / SDK | Download URL | Note |
+| - | - | - |
+| git | https://git-scm.com/downloads | Optional</br><sub>(code can be downloaded as a ZIP file from GitHub)</sub> |
+| Docker | https://docs.docker.com/desktop/install/windows-install | Optional</br><sub>(you can run the API on the host machine instead)</sub> |
+| .NET 7 | https://dotnet.microsoft.com/en-us/download/dotnet/7.0 | Mandatory |
 
 ### How to run if you are using an IDE, e.g. Visual Studio 2022
 
-* Clone the repository: https://github.com/dsaf/denys-news.git.
-* Ensure correct start up project is selected: Denys.News.Api.
+* Clone the repository: https://github.com/dsaf/denys-news.git
+* Ensure correct start up project is selected: Denys.News.Api
 * Select the desired debug target: http, https, Docker etc.
-* Run/debug the API.
-* A Swagger UI page should open up automatically in your default browser: http://localhost:5073/swagger .
-* Alternatively, you can invoke the endpoint directly using your preferred tool: http://localhost:5073/api/v1/stories?n=10 .
+* Run/debug the API
+* A Swagger UI page should open up automatically in your default browser: http://localhost:5073/swagger
+* Alternatively, you can invoke the endpoint directly using your preferred tool: http://localhost:5073/api/v1/stories?n=10
 
 ### How to run if you prefer the command line
 
@@ -31,8 +37,45 @@ Alternatively, you can invoke the endpoint directly using your preferred tool: h
 
 ## Assumptions Made
 
-TODO
+* When more than 500 stories are requested, there is no error produced but only 500 stories are returned
+* It is acceptable to serve a snapshot of versions refreshed every 60 seconds (configurable)
+* Implications of scaling out the web server are not considered
 
 ## Possible Enhancements
 
-TODO
+Ideally, further requirements should be received to form a backlog. Once the end goal of the hypothetical project is known, a more optimal technical solution can planned and implemented.
+
+The following tactical improvements could be made meanwhile:
+
+* Improve unit, integration and load test coverage
+* Introduce/evolve a domain layer
+* Implement more robust API versioning using https://github.com/dotnet/aspnet-api-versioning
+* Handle possible error states of Hacker News API and map them accordingly
+* Add "anticorruption layer" in front of Hacker News API to validate their DTOs
+* Consider using additional third-party packages depending on team's preferences (FluentValidation, AutoMapper, Autofac, Polly)
+* Depending on consistency requirements consider more sophisticated optimisation, e.g. updating more recent best stories more frequently
+* Carefully consider additional web-scraping from the source: https://news.ycombinator.com/best?p=
+
+Additional strategic improvements:
+
+* Introduce authentication if needed
+* Clarify target client usage and create a sample client code / application
+* Introduce continuous integration
+* Clarify SLA and introduce persistent cache
+* Add structured logging and performance metrics capture
+* Introduce notification mechanism for pushing updates
+
+## Action Screenshots
+
+#### Running on host machine:
+![Screenshot - running dotnet on host machine](/doc/action_dotnet_host.png?raw=true "Running on host machine")
+
+#### Running in a container:
+![Screenshot - container running in Docker Desktop](/doc/action_docker_desktop.png?raw=true "Running in a container")
+
+#### Invoking API endpoint:
+![Screenshot - invoking API endpoint via Swagger UI](/doc/action_swagger_ui.png?raw=true "Invoking API endpoint")
+
+## Internal Architecture
+
+![Screenshot - diagram of main types and dependencies between them](/doc/main_type_dependencies.png?raw=true "Main types and dependencies")
