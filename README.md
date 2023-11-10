@@ -79,6 +79,9 @@ Additional strategic improvements:
 #### Invoking API endpoint:
 ![Screenshot - invoking API endpoint via Swagger UI](/doc/action_swagger_ui.png?raw=true "Invoking API endpoint")
 
+#### Running unit tests:
+![Screenshot - running all unit tests in solution](/doc/unit_tests_passing.png?raw=true "Running unit tests")
+
 ## Internal Architecture
 
 ![Screenshot - diagram of main types and dependencies between them](/doc/main_type_dependencies.png?raw=true "Main types and dependencies")
