@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Denys.News.Core.Clients;
@@ -29,7 +28,7 @@ public sealed class StoryFetchingService : IStoryFetchingService
     {
         var ids = await _hackerNewsClient.GetBestStoryIds();
 
-        var stories = new List<StoryHeaderDto>();
+        var stories = new List<StoryHeaderDto>(ids.Count);
 
         foreach (var idChunk in ids.Chunk(_parallelRequests))
         {
@@ -37,31 +36,11 @@ public sealed class StoryFetchingService : IStoryFetchingService
 
             var hackerNewStoryDtos = await Task.WhenAll(tasks);
 
-            var storyHeaderDtos = hackerNewStoryDtos.Select(Map);
+            var storyHeaderDtos = hackerNewStoryDtos.Select(DtoMapping.MapToStoryHeader);
 
             stories.AddRange(storyHeaderDtos);
         }
 
         _repository.SetBestStories(stories.OrderByDescending(x => x.Score).ToArray());
-    }
-
-    private static StoryHeaderDto Map(HackerNewsStoryDto hackerNewStoryDto)
-    {
-        return new StoryHeaderDto
-        {
-            Title = hackerNewStoryDto.Title,
-            Uri = hackerNewStoryDto.Url,
-            PostedBy = hackerNewStoryDto.By,
-            Time = Map(hackerNewStoryDto.Time),
-            Score = hackerNewStoryDto.Score,
-            CommentCount = hackerNewStoryDto.Descendants
-        };
-    }
-
-    private static string Map(int unixTime)
-    {
-        return DateTimeOffset
-            .FromUnixTimeSeconds(unixTime)
-            .ToString(@"yyyy-MM-ddTHH\:mm\:sszzz", CultureInfo.InvariantCulture);
     }
 }

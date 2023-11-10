@@ -12,7 +12,5 @@ public sealed class StoryQueryService : IStoryQueryService
         => _repository = repository;
 
     public IReadOnlyCollection<StoryHeaderDto> GetBest(int number)
-    {
-        return _repository.GetBestStories(number);
-    }
+        => _repository.GetBestStories(number);
 }
