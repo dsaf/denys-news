@@ -24,6 +24,7 @@ public sealed class StoriesController : ControllerBase
     /// <param name="number">Number of stories to retrieve</param>
     /// <returns>The best n stories</returns>
     /// <response code="200">Returns the stories</response>
+    /// <response code="204">No stories available yet</response>
     /// <response code="400">If the number is not a positive integer</response>
     /// <response code="500">In case of unexpected internal errors</response>
     [HttpGet]
