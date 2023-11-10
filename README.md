@@ -16,8 +16,8 @@ During these periods, the application will be making a number of requests to Hac
 ### How to run if you are using an IDE, e.g. Visual Studio 2022
 
 * Clone the repository: https://github.com/dsaf/denys-news.git
-* Ensure correct start up project is selected: Denys.News.Api
-* Select the desired debug target: http, https, Docker etc.
+* Ensure correct start up project is selected: `Denys.News.Api`
+* Select the desired debug target: `http`, `https`, `Docker` etc.
 * Run/debug the API
 * A Swagger UI page should open up automatically in your default browser: http://localhost:5073/swagger
 * Alternatively, you can invoke the endpoint directly using your preferred tool: http://localhost:5073/api/v1/stories?n=10
@@ -37,8 +37,10 @@ Alternatively, you can invoke the endpoint directly using your preferred tool: h
 
 ## Assumptions Made
 
+* .NET 7 target is acceptible despite being an STS release.
 * When more than 500 stories are requested, there is no error produced but only 500 stories are returned
 * It is acceptable to serve a snapshot of versions refreshed every 60 seconds (configurable)
+* Relative transactionality of data is important, so the list of best stories should be refreshed at approximately same time as story details
 * Implications of scaling out the web server are not considered
 
 ## Possible Enhancements
