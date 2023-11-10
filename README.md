@@ -2,8 +2,8 @@
 
 ## How to Run
 
-*Note: on start up and every 60 seconds (configurable) after, the API web application will be polling Hacker News API for new data.
-During these periods, the application will be making a number of requests to Hacker News API as quickly as possible in controlled batches making up to 8 (configurable) parrallel requests at a time.*
+*Note: on start up and every 60 seconds (configurable) after, the wrapper API web application will be polling source API for new data.
+During these periods, the application will be making a number of requests to source API as quickly as possible in controlled batches making up to 8 (configurable) parrallel requests at a time.*
 
 ### Development prerequisites
 
@@ -52,11 +52,11 @@ The following tactical improvements could be made meanwhile:
 * Improve unit, integration and load test coverage
 * Introduce/evolve a domain layer
 * Implement more robust API versioning using https://github.com/dotnet/aspnet-api-versioning
-* Handle possible error states of Hacker News API and map them accordingly
-* Add "anticorruption layer" in front of Hacker News API to validate their DTOs
+* Handle possible error states of source API and map them accordingly
+* Add "anticorruption layer" in front of source API to validate source DTOs
 * Consider using additional third-party packages depending on team's preferences (FluentValidation, AutoMapper, Autofac, Polly)
 * Depending on consistency requirements consider more sophisticated optimisation, e.g. updating more recent best stories more frequently
-* Carefully consider additional web-scraping from the source: https://news.ycombinator.com/best?p=
+* Carefully consider additional web-scraping from the original source: https://news.ycombinator.com/best?p=
 
 Additional strategic improvements:
 
